@@ -15,6 +15,12 @@ from django.views.generic import ListView, DetailView, View
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
 
+from blog.views import get_category_count
+from blog.forms import CommentForm, PostForm
+from blog.models import Post, Author, PostView
+from marketing.forms import EmailSignupForm
+from marketing.models import Signup
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -66,7 +72,7 @@ class CheckoutView(View):
             if billing_address_qs.exists():
                 context.update(
                     {'default_billing_address': billing_address_qs[0]})
-            return render(self.request, "checkout.html", context)
+            return render(self.request, "store/checkout.html", context)
         except ObjectDoesNotExist:
             messages.info(self.request, "You do not have an active order")
             return redirect("store:checkout")
@@ -346,9 +352,41 @@ class PaymentView(View):
 
 
 class HomeView(ListView):
+    form = EmailSignupForm()
     model = Item
-    paginate_by = 10
-    template_name = "home.html"
+    paginate_by = 12
+    template_name = 'store/home.html'
+
+    def get_context_data(self, **kwargs):
+        category_count = get_category_count()
+        most_recent = Post.objects.order_by('-timestamp')[:6]
+        recent_musics = Item.objects.order_by('-created')[:6]
+        context = super().get_context_data(**kwargs)
+        context['most_recent'] = most_recent
+        context['recent_musics'] = recent_musics
+        context['page_request_var'] = "page"
+        context['category_count'] = category_count
+        context['form'] = self.form
+        return context
+
+
+class FreeMusicsView(ListView):
+    form = EmailSignupForm()
+    model = Item
+    paginate_by = 12
+    template_name = 'store/free_musics.html'
+
+    def get_context_data(self, **kwargs):
+        category_count = get_category_count()
+        most_recent = Post.objects.order_by('-timestamp')[:6]
+        recent_musics = Item.objects.order_by('-created')[:6]
+        context = super().get_context_data(**kwargs)
+        context['most_recent'] = most_recent
+        context['recent_musics'] = recent_musics
+        context['page_request_var'] = "page"
+        context['category_count'] = category_count
+        context['form'] = self.form
+        return context
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -358,15 +396,31 @@ class OrderSummaryView(LoginRequiredMixin, View):
             context = {
                 'object': order
             }
-            return render(self.request, 'order_summary.html', context)
+            return render(self.request, 'store/order_summary.html', context)
         except ObjectDoesNotExist:
             messages.warning(self.request, "You do not have an active order")
             return redirect("/")
 
 
 class ItemDetailView(DetailView):
+    form = EmailSignupForm()
     model = Item
-    template_name = "product.html"
+    template_name = "store/product.html"
+
+    def get_context_data(self, **kwargs):
+        item = get_object_or_404(Item, slug=self.kwargs.get('slug'))
+        category_count = get_category_count()
+        most_recent = Post.objects.order_by('-timestamp')[:6]
+        recent_musics = Item.objects.order_by('-created')[:6]
+        related_musics = Item.objects.filter(category=item.category).order_by('-created').exclude(id=item.id)[:9]
+        context = super().get_context_data(**kwargs)
+        context['most_recent'] = most_recent
+        context['recent_musics'] = recent_musics
+        context['related_musics'] = related_musics
+        context['page_request_var'] = "page"
+        context['category_count'] = category_count
+        context['form'] = self.form
+        return context
 
 
 @login_required
@@ -490,7 +544,7 @@ class RequestRefundView(View):
         context = {
             'form': form
         }
-        return render(self.request, "request_refund.html", context)
+        return render(self.request, "store/request_refund.html", context)
 
     def post(self, *args, **kwargs):
         form = RefundForm(self.request.POST)

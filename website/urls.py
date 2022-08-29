@@ -5,8 +5,11 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('store.urls', namespace='store')),
+    path('blog/', include('blog.urls')),
+    path('video/', include('video.urls')),
     path('accounts/', include('allauth.urls')),
-    path('', include('store.urls', namespace='store'))
+    path('tinymce/', include('tinymce.urls')),
 ]
 
 if settings.DEBUG:

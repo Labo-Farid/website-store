@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <section class="single">
+			<div class="container">
+				<div class="row">
+
+					<div class="col-md-8">
+						<ol class="breadcrumb">
+						  <li><a href="#">Acceuil</a></li>
+						  <li class="active"><a href="{% url 'blog_home' %}">Actualité</a></li>
+						</ol>
+						<article class="article main-article">
+							<header>
+								<h2>{{ post.title }}</h2>
+								<ul class="details">
+									<li>Il y'a {{ post.timestamp|timesince }} </li>
+									<li><a>{{ post.categories }}</a></li>
+									<li>By <a href="#">{{ post.author }}</a></li>
+								</ul>
+							</header>
+
+							<div class="main">
+								<div class="featured">
+									<figure>
+										<img src="{{ post.thumbnail.url }}">
+									</figure>
+								</div>
+
+								<p>{{ post.content | safe }}</p>
+								<blockquote>
+									Si cet article vous a plu, n’hésitez pas à le partager autour de vous.
+                                    N’oubliez également pas, de vous abonner à nos comptes sociaux, pour ne rater aucune information.
+								</blockquote>
+							</div>
+
+							<footer>
+								<div class="col">
+									<ul class="tags">
+										<li><a href="#">Free Themes</a></li>
+										<li><a href="#">Bootstrap 3</a></li>
+										<li><a href="#">Responsive Web Design</a></li>
+										<li><a href="#">HTML5</a></li>
+										<li><a href="#">CSS3</a></li>
+										<li><a href="#">Web Design</a></li>
+									</ul>
+								</div>
+								<div class="col">
+									<a href="#" class="love"><i class="ion-android-favorite-outline"></i> <div>1220</div></a>
+								</div>
+							</footer>
+						</article>
+
+						<div class="line">
+							<div>Author</div>
+						</div>
+						<div class="author">
+							<figure>
+								<img src="{{ post.author.profile_picture.url }}">
+							</figure>
+							<div class="details">
+								<div class="job">Web Developer</div>
+								<h3 class="name">{{ post.author }}</h3>
+{#								<p>Nulla sagittis rhoncus nisi, vel gravida ante. Nunc lobortis condimentum elit, quis porta ipsum rhoncus vitae. Curabitur magna leo, porta vel fringilla gravida, consectetur in libero. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.</p>#}
+								<ul class="social trp sm">
+									<li>
+										<a href="#" class="facebook">
+											<svg><rect/></svg>
+											<i class="ion-social-facebook"></i>
+										</a>
+									</li>
+									<li>
+										<a href="#" class="twitter">
+											<svg><rect/></svg>
+											<i class="ion-social-twitter"></i>
+										</a>
+									</li>
+									<li>
+										<a href="#" class="youtube">
+											<svg><rect/></svg>
+											<i class="ion-social-youtube"></i>
+										</a>
+									</li>
+									<li>
+										<a href="#" class="googleplus">
+											<svg><rect/></svg>
+											<i class="ion-social-googleplus"></i>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="line"><div>You May Also Like</div></div>
+						<div class="row">
+                            {% for post in related_posts %}
+							<article class="article related col-md-6 col-sm-6 col-xs-12">
+								<div class="inner">
+									<figure>
+										<a href="#">
+											<img src="{{ post.thumbnail.url }}">
+										</a>
+									</figure>
+									<div class="padding">
+										<h2><a href="#">{{ post.title }}</a></h2>
+										<div class="detail">
+											<div class="category"><a href="{{ post.categories }}">Lifestyle</a></div>
+											<div class="time">{{ post.timestamp }}</div>
+										</div>
+									</div>
+								</div>
+							</article>
+                            {% endfor %}
+
+						</div>
+
+						<div class="line thin"></div>
+						<div class="comments">
+							<h2 class="title">{{ post.comments.count }} commentaires</h2>
+							<div class="comment-list">
+                                {% for comment in post.get_comments %}
+								<div class="item">
+									<div class="user">
+										<figure>
+                                            {% if comment.user.author %}
+											    <img src="{{ comment.user.author.profile_picture.url }}">
+                                            {% else %}
+                                                <img src="{% static 'img/user.svg' %}" alt="..." class="img-fluid rounded-circle">
+                                            {% endif %}
+										</figure>
+										<div class="details">
+											<h5 class="name">{{ comment.user.username }}</h5>
+											<div class="time">Il y'a {{ comment.timestamp|timesince }}</div>
+											<div class="description">
+												{{ comment.content }}
+											</div>
+{#											<footer>#}
+{#												<a href="#">Reply</a>#}
+{#											</footer>a#}
+										</div>
+									</div>
+								</div>
+                                {% endfor %}
+							</div>
+
+                            {% if request.user.is_authenticated %}
+							<form method="POST" action="." class="commenting-form" class="row">
+                            {% csrf_token %}
+								<div class="col-md-12">
+									<h3 class="title">Entrer un commentaire</h3>
+								</div>
+
+								<div class="form-group col-md-12">
+                                    {{ form }}
+								</div>
+								<div class="form-group col-md-12">
+									<button type="submit" class="btn btn-primary">Commenter</button>
+								</div>
+							</form>
+                            {% else %}
+                                <a href="{% url 'account_login' %}" class="btn btn-primary">Login to comment</a>
+                            {% endif %}
+						</div>
+					</div>
+
+					{% include 'sidebar.html' with most_recent=most_recent category_count=category_count %}
+
+				</div>
+			</div>
+		</section>
+
+{% endblock content %}

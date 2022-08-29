@@ -1,27 +1,34 @@
+
+
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
+from django.utils import timezone
 from django_countries.fields import CountryField
-
-
-CATEGORY_CHOICES = (
-    ('S', 'Shirt'),
-    ('SW', 'Sport wear'),
-    ('OW', 'Outwear')
-)
-
-LABEL_CHOICES = (
-    ('P', 'primary'),
-    ('S', 'secondary'),
-    ('D', 'danger')
-)
 
 ADDRESS_CHOICES = (
     ('B', 'Billing'),
     ('S', 'Shipping'),
 )
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class Artist(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200)
+    country = CountryField(default='togo')
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class UserProfile(models.Model):
@@ -35,14 +42,25 @@ class UserProfile(models.Model):
 
 
 class Item(models.Model):
-    title = models.CharField(max_length=100)
-    price = models.FloatField()
-    discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
-    label = models.CharField(choices=LABEL_CHOICES, max_length=1)
+    STATUS_CHOICES = (
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+    )
+
+    title = models.CharField(max_length=200)
     slug = models.SlugField()
+    is_premium = models.BooleanField(default=False)
+    price = models.FloatField(null=True, blank=True)
+    discount_price = models.FloatField(null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    audio = models.FileField(upload_to='media/store/audios', default='')
     description = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to='media/store/images')
+    status = models.CharField(choices=STATUS_CHOICES, default='published', max_length=10)
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, default='')
+    created = models.DateTimeField(default=timezone.now)
+    is_on_top = models.BooleanField(default=False)
+    is_best = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -69,7 +87,7 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
- 
+
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 

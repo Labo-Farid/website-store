@@ -1,0 +1,152 @@
+{% load static %}
+<div class="col-xs-6 col-md-4 sidebar" id="sidebar">
+    <div class="sidebar-title for-tablet">Sidebar</div>
+    <aside>
+        <div class="aside-body">
+          <figure class="ads">
+              <a href="single.html">
+                <img src="{% static 'images/ad.png' %}">
+              </a>
+            <figcaption>Advertisement</figcaption>
+          </figure>
+        </div>
+    </aside>
+
+    <aside>
+        <h1 class="aside-title">Musiques premium récentes</h1>
+        <div class="aside-body">
+            {% for item in recent_musics %}
+                {% if item.is_premium %}
+            <article class="article-mini">
+                <div class="inner">
+                    <figure>
+                        <a href="{{ item.get_absolute_url }}">
+                            <img src="{{ item.image.url }}" alt="Sample Article">
+                        </a>
+                    </figure>
+                    <div class="padding">
+                        <h1><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h1>
+                        <p><span class="bold">Gratuit {{ item.price }}</span></p>
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </aside>
+
+    <aside>
+        <div class="aside-body">
+            <form action="{% url 'email-list-signup' %}" method="POST" class="newsletter">
+                {% csrf_token %}
+                <div class="icon">
+                    <i class="ion-ios-email-outline"></i>
+                    <h1>Newsletter</h1>
+                </div>
+                <div class="form-group">
+                    {{ form }}
+                    <div class="input-group-btn">
+                        <button type="submit" class="submit btn btn-primary"><i class="ion-paper-airplane"></i></button>
+                    </div>
+                </div>
+                <p>By subscribing you will receive new articles in your email.</p>
+            </form>
+        </div>
+    </aside>
+
+    <aside>
+        <div class="aside-body">
+          <figure class="ads">
+              <a href="single.html">
+                <img src="{% static 'images/ad.png' %}">
+              </a>
+            <figcaption>Advertisement</figcaption>
+          </figure>
+        </div>
+    </aside>
+
+    <aside>
+        <h1 class="aside-title">Articles récents</h1>
+        <div class="aside-body">
+            {% for post in most_recent %}
+            <article class="article-mini">
+                <div class="inner">
+                    <figure>
+                        <a href="{{ post.get_absolute_url }}">
+                            <img src="{{ post.thumbnail.url }}" alt="Sample Article">
+                        </a>
+                    </figure>
+                    <div class="padding">
+                        <h1><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h1>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <aside>
+        <h1 class="aside-title">Videos
+            <div class="carousel-nav" id="video-list-nav">
+                <div class="prev"><i class="ion-ios-arrow-left"></i></div>
+                <div class="next"><i class="ion-ios-arrow-right"></i></div>
+            </div>
+        </h1>
+        <div class="aside-body">
+            <ul class="video-list" data-youtube='"carousel":true, "nav": "#video-list-nav"'>
+                <li><a data-youtube-id="SBjQ9tuuTJQ" data-action="magnific"></a></li>
+                <li><a data-youtube-id="9cVJr3eQfXc" data-action="magnific"></a></li>
+                <li><a data-youtube-id="DnGdoEa1tPg" data-action="magnific"></a></li>
+            </ul>
+        </div>
+    </aside>
+    <aside id="sponsored">
+        <h1 class="aside-title">Sponsored</h1>
+        <div class="aside-body">
+            <ul class="sponsored">
+                <li>
+                    <a href="#">
+                        <img src="{% static 'images/sponsored.png' %}" alt="Sponsored">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="{% static 'images/sponsored.png' %}" alt="Sponsored">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="{% static 'images/sponsored.png' %}" alt="Sponsored">
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="{% static 'images/sponsored.png' %}" alt="Sponsored">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+    <aside>
+        <h1 class="aside-title">Musiques gratuite récentes</h1>
+        <div class="aside-body">
+            {% for item in recent_musics %}
+                {% if not item.is_premium %}
+            <article class="article-mini">
+                <div class="inner">
+                    <figure>
+                        <a href="{{ item.get_absolute_url }}">
+                            <img src="{{ item.image.url }}" alt="Sample Article">
+                        </a>
+                    </figure>
+                    <div class="padding">
+                        <h1><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h1>
+                        <p><span class="bold">Gratuit</span></p>
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </aside>
+</div>

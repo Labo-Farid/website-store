@@ -1,64 +1,110 @@
+{% load static %}
 {% load cart_template_tags %}
 
-<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
-    <div class="container">
+<header class="primary">
+			<div class="firstbar">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-3 col-sm-12">
+							<div class="brand">
+								<a href="index.html">
+{#									<img src="{% static 'images/logo.png' %}" alt="Magz Logo">#}
+                                    <h1>Hits 404</h1>
+								</a>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<form action="{% url 'search' %}" class="search" autocomplete="off">
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" name="q" class="form-control" placeholder="Entrer votre recherche">
+										<div class="input-group-btn">
+											<button class="btn btn-primary"><i class="ion-search"></i></button>
+										</div>
+									</div>
+								</div>
+								<div class="help-block">
+									<div>Popular:</div>
+									<ul>
+										<li><a href="#">HTML5</a></li>
+										<li><a href="#">CSS3</a></li>
+										<li><a href="#">Bootstrap 3</a></li>
+										<li><a href="#">jQuery</a></li>
+										<li><a href="#">AnguarJS</a></li>
+									</ul>
+								</div>
+							</form>
+						</div>
+						<div class="col-md-3 col-sm-12 text-right">
+							<ul class="nav-icons">
+                                {% if not request.user.is_authenticated %}
+								    <li><a href="{% url 'account_signup' %}"><i class="ion-person-add"></i><div>Register</div></a></li>
+								    <li><a href="{% url 'account_login' %}"><i class="ion-person"></i><div>Login</div></a></li>
+                                {% endif %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <!-- Brand -->
-      <a class="navbar-brand waves-effect" href="/">
-        <strong class="blue-text">Top Hits</strong>
-      </a>
+			<!-- Start nav -->
+			<nav class="menu">
+				<div class="container">
+					<div class="brand">
+						<a href="#">
+{#							<img src="{% static 'images/logo.png' %}" alt="Magz Logo">#}
+                            <h5>Hits 404</h5>
+						</a>
+					</div>
+					<div class="mobile-toggle">
+						<a href="#" data-toggle="menu" data-target="#menu-list"><i class="ion-navicon-round"></i></a>
+					</div>
+					<div class="mobile-toggle">
+						<a href="#" data-toggle="sidebar" data-target="#sidebar"><i class="ion-ios-arrow-left"></i></a>
+					</div>
+					<div id="menu-list">
+						<ul class="nav-list">
+							<li class="for-tablet nav-title"><a>Menu</a></li>
+                            {% if not request.user.is_authenticated %}
+							    <li class="for-tablet"><a href="{% url 'account_login' %}">Login</a></li>
+							    <li class="for-tablet"><a href="{% url 'account_signup' %}">Register</a></li>
+                            {% endif %}
 
-      <!-- Collapse -->
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+							<li><a href="{% url 'store:home' %}">Acceuil</a></li>
+							<li><a href="{% url 'store:premium_musics' %}">Musics premiums</a></li>
+							<li><a href="{% url 'store:free_musics' %}">Musics gratuits</a></li>
+							<li><a href="{% url 'blog_home' %}">Actualité</a></li>
+							<li><a href="{% url 'video_home' %}">Vidéos</a></li>
+							<li><a href="">Classement</a></li>
+                            <li><a href="">Publicité</a></li>
+							<li><a href="">Contact</a></li>
 
-      <!-- Links -->
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            {% if request.user.is_authenticated %}
+							    <li><a href="{% url 'store:order-summary' %}">Panier<ion-icon name="cart"></ion-icon>
+                                    <div class="badge">{{ request.user|cart_item_count }}</div>
+                                </a></li>
+                            {% endif %}
 
-        <!-- Left -->
-        <ul class="navbar-nav mr-auto">
-          {% comment %} <li class="nav-item active">
-            <a class="nav-link waves-effect" href="/">Home
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="/checkout">
-            Checkout</a>
-          </li> {% endcomment %}
-        </ul>
+							<li class="dropdown magz-dropdown"><a href="#">Settings <i class="ion-ios-arrow-right"></i></a>
+								<ul class="dropdown-menu">
+									<li><a href="#"><i class="icon ion-person"></i> My Account</a></li>
+									<li><a href="#"><i class="icon ion-heart"></i> Favorite</a></li>
+									<li><a href="#"><i class="icon ion-chatbox"></i> Comments</a></li>
+									<li><a href="#"><i class="icon ion-key"></i> Change Password</a></li>
+									<li><a href="#"><i class="icon ion-settings"></i> Settings</a></li>
+									<li class="divider"></li>
+                                    {% if request.user.is_authenticated %}
+									<li><a href="{% url 'account_logout' %}"><i class="icon ion-log-out"></i> Logout</a></li>
+                                    {% else %}
+                                        <li><a href="{% url 'account_login' %}"><i class="icon ion-log-in"></i> Connexion</a></li>
+                                        <li><a href="{% url 'account_signup' %}"><i class="icon ion-log-in"></i> Inscription</a></li>
+                                    {% endif %}
+								</ul>
+							</li>
 
-        <!-- Right -->
-        <ul class="navbar-nav nav-flex-icons">
-          {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a href="{% url 'store:order-summary' %}" class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
-              <i class="fas fa-shopping-cart"></i>
-              <span class="clearfix d-none d-sm-inline-block"> Cart </span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
-              <span class="clearfix d-none d-sm-inline-block"> Logout </span>
-            </a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'account_login' %}">
-              <span class="clearfix d-none d-sm-inline-block"> Login </span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="{% url 'account_signup' %}">
-              <span class="clearfix d-none d-sm-inline-block"> Signup </span>
-            </a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-
-    </div>
-  </nav>
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<!-- End nav -->
+		</header>

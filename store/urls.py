@@ -1,8 +1,10 @@
 from django.urls import path
+from blog.views import index
 from .views import (
     ItemDetailView,
     CheckoutView,
     HomeView,
+    FreeMusicsView,
     OrderSummaryView,
     add_to_cart,
     remove_from_cart,
@@ -15,7 +17,9 @@ from .views import (
 app_name = 'store'
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
+    path('', index, name='home'),
+    path('premium-musics', HomeView.as_view(), name='premium_musics'),
+    path('free-musics', FreeMusicsView.as_view(), name='free_musics'),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('order-summary/', OrderSummaryView.as_view(), name='order-summary'),
     path('product/<slug>/', ItemDetailView.as_view(), name='product'),

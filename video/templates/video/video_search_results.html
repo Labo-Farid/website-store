@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <section class="category">
+		  <div class="container">
+		    <div class="row">
+		      <div class="col-md-8 text-left">
+		        <div class="row">
+		          <div class="col-md-12">
+		            <ol class="breadcrumb">
+		              <li><a href="#">Home</a></li>
+		              <li class="active">Computer</li>
+		            </ol>
+		            <h1 class="page-title">Resultats: {{ q }}</h1>
+		            <p class="page-subtitle">Les articles de votre <i>recherche</i></p>
+		          </div>
+		        </div>
+		        <div class="line"></div>
+
+		        <div class="row">
+                    {% for post in queryset %}
+		          <article class="col-md-12 article-list">
+		            <div class="inner">
+		              <figure>
+			              <a href="single.html">
+			                <img src="{{ post.thumbnail.url }}">
+		                </a>
+		              </figure>
+		              <div class="details">
+		                <div class="detail">
+		                  <div class="category">
+		                   <a href="category.html">Film</a>
+		                  </div>
+		                  <div class="time">Il y'a {{ post.timestamp|timesince }}</div>
+		                </div>
+		                <h1><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h1>
+		                <p>
+		                  {{ post.content|linebreaks|slice:'150'|safe }}
+		                </p>
+		                <footer>
+		                  <a href="#" class="love"><i class="ion-android-favorite-outline"></i> <div>237</div></a>
+		                  <a class="btn btn-primary more" href="{{ post.get_absolute_url }}">
+		                    <div>Lire l'article</div>
+		                    <div><i class="ion-ios-arrow-thin-right"></i></div>
+		                  </a>
+		                </footer>
+		              </div>
+		            </div>
+		          </article>
+                    {% endfor %}
+
+		          <div class="col-md-12 text-center">
+		            <ul class="pagination">
+		              <li class="prev"><a href="#"><i class="ion-ios-arrow-left"></i></a></li>
+		              <li class="active"><a href="#">1</a></li>
+		              <li><a href="#">2</a></li>
+		              <li><a href="#">3</a></li>
+		              <li><a href="#">...</a></li>
+		              <li><a href="#">97</a></li>
+		              <li class="next"><a href="#"><i class="ion-ios-arrow-right"></i></a></li>
+		            </ul>
+		            <div class="pagination-help-text">
+		            	Showing 8 results of 776 &mdash; Page 1
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+
+		      {% include 'sidebar.html' with most_recent=most_recent category_count=category_count %}
+		    </div>
+		  </div>
+		</section>
+
+
+{% endblock %}

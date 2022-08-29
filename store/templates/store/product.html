@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <section class="home">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-12 col-xs-12">
+                    <div class="row main-article">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="">
+                                <div class="inner">
+                                    <img class="product__details__pic__item--large"
+                                        src="{{ object.image.url }}" width="100%" alt="">
+                                    <audio preload="auto" controls>
+                                            <source src="{{ item.audio.url }}">
+                                        </audio>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12 article main-article">
+                            <div class="main">
+                                <h2>{{ object.title }}</h2>
+
+                                {% if object.is_premium %}
+                                    {% if object.discount_price %}
+                                        <h1 class="">${{ object.discount_price }}</h1>
+                                    {% else %}
+                                        <h1 class="">${{ object.price }}</h1>
+                                    {% endif %}
+                                {% else %}
+                                    <h1 class="">Gratuit</h1>
+                                {% endif %}
+
+
+                                <p>{{ object.description }}</p>
+
+                                <footer>
+                                    {% if object.is_premium %}
+                                        <a class="btn btn-primary more" href="{{ object.get_add_to_cart_url }}">
+                                            <div>ADD TO CARD</div>
+                                            <div><ion-icon name="cart"></ion-icon></div>
+                                        </a>
+                                        <a class="btn btn-primary more" href="{{ object.get_remove_from_cart_url }}">
+                                            <div>REMOVE TO CARD</div>
+                                            <div><ion-icon name="close"></ion-icon></div>
+                                        </a>
+                                    {% else %}
+                                        <a class="btn btn-primary more" href="" download="{{ item.audio.url }}">
+                                            <div>Télécharger</div>
+                                            <div><ion-icon name="download"></ion-icon></div>
+                                        </a>
+
+                                    {% endif %}
+
+                                </footer>
+
+                                <div class="main">
+                                    <br>
+                                    <p><b>Category :</b> <span>{{ object.get_category_display }}</span></p>
+                                    <p><b>Artist :</b> <span>Santrinos Raphael</span></p>
+                                    <p><b>Prod by :</b> <span>Bobino Beat</span></p>
+                                    <p><b>Album :</b> <span>Coup de coeur</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="line">
+                            <div>Related musics</div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        {% for item in related_musics %}
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <article class="article">
+                                    <div class="inner">
+                                        <figure>
+                                            <a href="shop-detail.html">
+                                                <img src="{{ item.image.url }}" alt="Sample Article">
+                                            </a>
+                                        </figure>
+                                        <div class="padding">
+                                            <div class="detail">
+                                                <div class="time">Il y'a {{ item.created|timesince }}</div>
+                                                <div class="category"><a href="category.html">Lifestyle</a></div>
+                                            </div>
+                                            <h6><a href="shop-detail.html">{{ item.title }}</a></h6>
+                                            <p><span class="bold">
+                                                {% if item.discount_price %}
+                                                    Premium ${{ item.discount_price }}
+                                                {% elif item.price %}
+                                                    Premium ${{ item.price }}
+                                                {% else %}
+                                                    Gratuit
+                                                {% endif %}
+                                            </span></p>
+                                            <footer>
+                                                <a href="#" class="love">
+                                                    <span class="bold">
+                                                    12.000
+                                                    </span>
+                                                    <ion-icon name="download"></ion-icon>
+                                                </a>
+    											<a class="btn btn-primary more" href="{{ item.get_absolute_url }}">
+    												<div><ion-icon name="eye"></ion-icon></div>
+    												<div><ion-icon name="eye"></ion-icon></div>
+    											</a>
+                                                <a class="btn btn-primary more" href="{{ item.get_add_to_cart_url }}">
+                                                    <div><ion-icon name="cart"></ion-icon></div>
+                                                    <div><ion-icon name="cart"></ion-icon></div>
+                                                </a>
+                                            </footer>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        {% endfor %}
+                    </div>
+			    </div>
+
+                {% include 'sidebar.html' with most_recent=most_recent category_count=category_count %}
+            </div>
+        </div>
+    </section>
+		<!-- Product Details Section End -->
+
+
+{% endblock content %}
